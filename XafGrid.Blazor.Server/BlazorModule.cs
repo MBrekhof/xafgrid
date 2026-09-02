@@ -20,6 +20,10 @@ public sealed class XafGridBlazorModule : ModuleBase {
     public override IEnumerable<ModuleUpdater> GetModuleUpdaters(IObjectSpace objectSpace, Version versionFromDB) {
         return ModuleUpdater.EmptyModuleUpdaters;
     }
+    public override void AddGeneratorUpdaters(ModelNodesGeneratorUpdaters updaters) {
+        base.AddGeneratorUpdaters(updaters);
+        updaters.Add(new DemoViewsGeneratorUpdater());
+    }
     public override void Setup(XafApplication application) {
         base.Setup(application);
     }

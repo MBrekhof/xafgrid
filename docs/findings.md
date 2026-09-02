@@ -29,3 +29,46 @@ Lessons that every later test relies on:
   replaced by `DatabaseUpdateMode.UpdateDatabaseAlways` + unconditional `e.Updater.Update()`
   (demo app, throw-away SQLite).
 - `[Aggregated]` lives in `DevExpress.ExpressApp.DC`, not `DevExpress.Persistent.Base`.
+
+## How the demo ListViews are declared (2026-09-02)
+
+- **A `<ListView>` added only in `Model.xafml` gets no `Columns` node** — the grid renders with the
+  expand/selection columns and nothing else. The Model Editor avoids this by persisting the
+  generated columns into the xafml. Views created in code via
+  `ModelNodesGeneratorUpdater<ModelViewsNodesGenerator>` (`viewsNode.AddNode<IModelListView>(id)`
+  + `ModelClass`) do get default columns (dxdocs 113315) → `DemoViewsGeneratorUpdater`.
+- Nodes that don't exist in the generated model need `IsNewNode="True"` in a diff layer, or the
+  loader silently drops them (that is what the Model Editor writes). Navigation items pointing
+  at a missing view are filtered out, so the nav group vanishes too.
+- `TargetViewId` on an `ObjectViewController<ListView, Order>` scopes each demo to its own view.
+
+## D1 — master-detail row (`screens/d1-master-detail.png`)
+
+Verdict: **works.** `GridModel.DetailRowTemplate = ctx => builder => …` with a Razor component
+(`OrderDetailRow`) hosting a nested `DxGrid` over `Order.Lines`; `AutoCollapseDetailRow` keeps one
+row open. Expand buttons appear automatically once a template is set.
+
+- `ctx.DataItem` is the entity in Client mode and a `BlazorObjectRecord` in server modes;
+  `DxGridListEditorBase.GetObject(dataItem)` is public and resolves both (spike S4 closed).
+- Lazy loading works inside the template: `Order.Lines` and `line.Product` load through the view's
+  object space.
+- XAF 26.1 already has a built-in *preview row* (`ListEditorPreviewRowViewController`,
+  `IModelListView.PreviewColumnName`): one column's property editor, always expanded. The extra
+  here is on-demand expansion with arbitrary content.
+
+## D2 — rich cells (`screens/d2-cells.png`)
+
+Verdict: **works, per column only.** XAF renders every data column through its own
+`DxGridDataColumnModel.CellDisplayTemplate` (the property editor's view component,
+`DxGridListEditor.CreateDataColumnModel`). A per-column template beats the grid-level
+`DataColumnCellDisplayTemplate`, so setting `GridModel.DataColumnCellDisplayTemplate` does nothing —
+override `column.DxGridDataColumnModel.CellDisplayTemplate` on the `DxGridColumnWrapper` instead
+(spike S5 closed). The edit template is untouched, so inline editing keeps XAF's editors.
+`Status` → badge, `Customer` → avatar initials + stars, `Total` → inline bar (`OrderCell.razor`).
+
+## D3 — heat-map (`screens/d3-heatmap.png`)
+
+Verdict: **works.** `GridModel.CustomizeElement += e => …` (use `+=`: XAF chains its own handler for
+detail cells). Row class by order age, inline `Style` for cancelled rows, cell class on `Total`.
+`e.Column.Name` is unset — match on `(e.Column as IGridDataColumn).FieldName`. Row backgrounds need
+`.dxbl-grid tr.cls > td { background-color }` to beat the theme's cell styles.

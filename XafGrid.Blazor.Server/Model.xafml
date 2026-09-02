@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Application>
   <Options UIType="TabbedMDI"
          FormStyle="Ribbon"
@@ -6,5 +6,16 @@
          ShowTabImage="True"
 	 VirtualScrollingEnabled="True">
   </Options>
-  <NavigationItems NavigationStyle="Accordion" />
+  <!-- demo ListViews are created in code (DemoViewsGeneratorUpdater); only their navigation items live here -->
+  <NavigationItems NavigationStyle="Accordion">
+    <Items>
+      <Item Id="GridDemos" Caption="Grid Demos" Index="0" IsNewNode="True">
+        <Items>
+          <Item Id="D1" ViewId="Order_ListView_MasterDetail" Caption="D1 Master-detail row" IsNewNode="True" />
+          <Item Id="D2" ViewId="Order_ListView_Cells" Caption="D2 Rich cells" IsNewNode="True" />
+          <Item Id="D3" ViewId="Order_ListView_Heatmap" Caption="D3 Heat-map" IsNewNode="True" />
+        </Items>
+      </Item>
+    </Items>
+  </NavigationItems>
 </Application>

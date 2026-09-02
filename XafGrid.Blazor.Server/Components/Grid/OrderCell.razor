@@ -1,0 +1,35 @@
+@using System.Globalization
+@using XafGrid.Module.BusinessObjects
+
+@switch (Kind) {
+    case CellKind.Status:
+        <span class="xg-badge xg-badge-@Order.Status.ToString().ToLowerInvariant()">@Order.Status</span>
+        break;
+    case CellKind.Customer:
+        var c = Order.Customer;
+        <span class="xg-avatar" style="background:@AvatarColor(c?.Name)">@Initials(c?.Name)</span>
+        <span>@c?.Name</span>
+        <span class="xg-stars" title="@(c?.Rating)/5">@(new string('★', c?.Rating ?? 0))</span>
+        break;
+    case CellKind.Total:
+        // ponytail: fixed reference max instead of the real column max — good enough for a bar
+        var pct = Math.Clamp((double)(Order.Total / 8000m) * 100, 2, 100);
+        <div class="xg-bar">
+            <div class="xg-bar-fill" style="width:@pct.ToString("0", CultureInfo.InvariantCulture)%"></div>
+            <span class="xg-bar-text">@Order.Total.ToString("C0")</span>
+        </div>
+        break;
+}
+
+@code {
+    public enum CellKind { Status, Customer, Total }
+
+    [Parameter, EditorRequired] public Order Order { get; set; }
+    [Parameter] public CellKind Kind { get; set; }
+
+    static string Initials(string name) =>
+        string.IsNullOrWhiteSpace(name) ? "?" : string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(w => char.ToUpperInvariant(w[0])));
+
+    // deterministic hue per name (string.GetHashCode is randomized per process)
+    static string AvatarColor(string name) => $"hsl({(name ?? "").Sum(ch => ch) % 360},55%,45%)";
+}

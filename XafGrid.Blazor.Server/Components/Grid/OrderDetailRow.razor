@@ -1,0 +1,26 @@
+@using XafGrid.Module.BusinessObjects
+
+<div class="xg-detail">
+    <div class="xg-detail-card">
+        <div class="xg-detail-title">@Order.Customer?.Name</div>
+        <div>@Order.Customer?.City, @Order.Customer?.Country</div>
+        <div class="xg-stars">@(new string('★', Order.Customer?.Rating ?? 0))@(new string('☆', 5 - (Order.Customer?.Rating ?? 0)))</div>
+        <div class="mt-2">@Order.Lines.Count lines · <b>@Order.Total.ToString("C")</b></div>
+        <div>Handled by @Order.Employee?.Name</div>
+    </div>
+    <DxGrid Data="Order.Lines" CssClass="xg-detail-grid" ShowAllRows="true" TextWrapEnabled="false">
+        <Columns>
+            <DxGridDataColumn FieldName="ProductId" Caption="Product">
+                <CellDisplayTemplate>@(((OrderLine)context.DataItem).Product?.Name)</CellDisplayTemplate>
+            </DxGridDataColumn>
+            <DxGridDataColumn FieldName="Quantity" Width="90px" />
+            <DxGridDataColumn FieldName="UnitPrice" DisplayFormat="c" Width="120px" />
+            <DxGridDataColumn FieldName="Discount" DisplayFormat="p0" Width="100px" />
+            <DxGridDataColumn FieldName="LineTotal" DisplayFormat="c" Width="120px" />
+        </Columns>
+    </DxGrid>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Order Order { get; set; }
+}
