@@ -23,6 +23,11 @@ public class DemoTests : XafTest {
             Assert.That(await Page.Locator(".xg-bar-fill").CountAsync(), Is.GreaterThanOrEqualTo(10));
         });
         await ScreenshotAsync("d2-cells");
+
+        await UseDarkThemeAsync();
+        await OpenViewAsync("Order_ListView_Cells");
+        await Expect(Page.Locator(".xg-badge").First).ToBeVisibleAsync();
+        await ScreenshotAsync("d2-cells-dark");
     }
 
     [Test]
@@ -34,5 +39,10 @@ public class DemoTests : XafTest {
             Assert.That(await Page.Locator("td.xg-hot").CountAsync(), Is.GreaterThanOrEqualTo(1));
         });
         await ScreenshotAsync("d3-heatmap");
+
+        await UseDarkThemeAsync();
+        await OpenViewAsync("Order_ListView_Heatmap");
+        await Expect(Page.Locator("tr[class*='xg-heat-']").First).ToBeVisibleAsync();
+        await ScreenshotAsync("d3-heatmap-dark");
     }
 }

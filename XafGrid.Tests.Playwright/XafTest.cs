@@ -25,6 +25,11 @@ public abstract class XafTest : PageTest {
         await Expect(Grid).ToBeVisibleAsync();
     }
 
+    /// <summary>XAF restores the theme from the XAF_CurrentTheme cookie (classic theme = its caption from appsettings ThemeSwitcher).</summary>
+    protected Task UseDarkThemeAsync() => Context.AddCookiesAsync(new[] {
+        new Cookie { Name = "XAF_CurrentTheme", Value = "Blazing Dark", Url = AppHost.BaseUrl },
+    });
+
     /// <summary>Evidence screenshots are committed under docs/screens.</summary>
     protected async Task ScreenshotAsync(string name) {
         var dir = Path.Combine(AppHost.RepoRoot, "docs", "screens");
