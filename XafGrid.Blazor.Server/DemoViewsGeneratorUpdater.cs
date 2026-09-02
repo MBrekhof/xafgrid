@@ -19,6 +19,9 @@ public class DemoViewsGeneratorUpdater : ModelNodesGeneratorUpdater<ModelViewsNo
         ("Order_ListView_Summary", typeof(Order), "D5 Custom summaries"),
         ("Order_ListView_Toolbar", typeof(Order), "D6 In-grid toolbar"),
         ("Order_ListView_Unbound", typeof(Order), "D7 Unbound columns"),
+        ("Product_ListView_Reorder", typeof(Product), "D8 Drag to reorder"),
+        ("Order_ListView_Presets", typeof(Order), "D9 Layout presets"),
+        ("Order_ListView_Columns", typeof(Order), "D10 Wide grid"),
     };
 
     public override void UpdateNode(ModelNode viewsNode) {
@@ -26,6 +29,22 @@ public class DemoViewsGeneratorUpdater : ModelNodesGeneratorUpdater<ModelViewsNo
             var listView = viewsNode.AddNode<IModelListView>(id);
             listView.ModelClass = viewsNode.Application.BOModel.GetClass(type);
             listView.Caption = caption;
+        }
+
+        // D8: DxGrid refuses between-row drops while a column sort is active, so the grid itself must stay
+        // unsorted: drop the generator's default sort on the DefaultProperty column (Name) and order the
+        // data through the collection source (model Sorting node) instead.
+        var reorder = (IModelListView)viewsNode.GetNode("Product_ListView_Reorder");
+        reorder.Columns[nameof(Product.Name)].SortIndex = -1;
+        var sort = reorder.Sorting.AddNode<IModelSortProperty>(nameof(Product.SortOrder));
+        sort.PropertyName = nameof(Product.SortOrder);
+        sort.Direction = DevExpress.Xpo.DB.SortingDirection.Ascending;
+
+        // D10: nested-property columns to make the grid wider than the viewport
+        var wide = (IModelListView)viewsNode.GetNode("Order_ListView_Columns");
+        foreach(var path in new[] { "Customer.Country", "Customer.City", "Customer.Rating", "Customer.Since", "Employee.Title" }) {
+            var column = wide.Columns.AddNode<IModelColumn>(path);
+            column.PropertyName = path;
         }
     }
 }

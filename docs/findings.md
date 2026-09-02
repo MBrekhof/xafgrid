@@ -115,3 +115,43 @@ DetailView. Editing through the view's `ObjectSpace` + `CommitChanges()` refresh
 Added columns are appended **sorted by FieldName** (Actions, DaysOpen, LineCount, Margin), not in
 call order — set `Caption`s accordingly or expect to reorder. Column-chooser survival (spike S2)
 not checked.
+
+## D8 — drag rows to reorder (`screens/d8-reorder.png`)
+
+Verdict: **works.** `GridModel.AllowDragRows = true` (spike S1 closed: the property is declared on
+`DxGridBaseModel`, which is why dxdocs' `DxGridModel` member list omits it; `SetAttribute` exists
+as a general fallback), `AllowedDropTarget = Internal`, `DragHintTextTemplate`, and
+`ItemsDropped = EventCallback.Factory.Create<GridItemsDroppedEventArgs>(this, …)`. The handler
+renumbers `Product.SortOrder`, commits and calls `View.Refresh()`.
+
+- **DxGrid refuses between-row drops while a column sort is active** — the drag starts (hint
+  shows) but no drop indicator appears and `ItemsDropped` never fires. XAF's column generator puts
+  `SortIndex 0` on the `DefaultProperty` column (Name), so clear it (`Columns["Name"].SortIndex =
+  -1`) and order the *data* through the model `Sorting` node (`IModelSortProperty`) instead.
+- Playwright: `DragToAsync` does not start DevExpress's pointer-based drag; hold the anchor
+  (`td.dxbl-grid-row-drag-anchor-cell`) ~250 ms after `Mouse.Down`, then move in ≥10 steps.
+
+## D9 — layout presets in the database (`screens/d9-presets.png`)
+
+Verdict: **works.** `IGrid.SaveLayout()` → `JsonSerializer.Serialize(GridPersistentLayout)` into a
+`GridLayoutPreset` entity (ViewId, Name, LayoutJson) through the view's `ObjectSpace`;
+`LoadLayout(JsonSerializer.Deserialize<GridPersistentLayout>(json))` restores sort/columns. The
+preset toolbar (`PresetToolbar.razor`) lives in `ToolbarTemplate` and owns the visible list.
+Spike S6: XAF's own layout sync coexists — loading a preset also updates the model, harmless.
+Gotchas: `DxTextBox` needs `BindValueMode.OnInput` for a button enabled on typing; `ClearSort()`
+removes *every* sort including XAF's default Number sort → natural DB order.
+
+## D10 — wide grid (`screens/d10-wide.png`)
+
+Verdict: **works.** Extra nested-property columns (`Customer.Country`, … `Employee.Title`) added in
+the generator updater (`Columns.AddNode<IModelColumn>(path)` + `PropertyName`), then per column on
+`DxGridDataColumnModel`: `Width`, `MinWidth`, `FixedPosition` (Left for Number, Right for Total —
+spike S3 closed), `FilterMenuButtonDisplayMode = Never` for nested columns, and a
+`HeaderCaptionTemplate` with a tooltip `title`. `VirtualScrollingMode = RowsAndColumns` on top of
+the model's `VirtualScrollingEnabled` virtualizes columns too. Fixed columns stay put while the
+rest scrolls (test compares header bounding boxes).
+
+## Not done
+
+D11 (filter-row / filter-menu templates, custom search box) and D12 (custom edit form template)
+are left out — lower value than the ten above; the same `DxGridModel` template properties apply.

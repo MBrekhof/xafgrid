@@ -18,6 +18,9 @@
           <Item Id="D5" ViewId="Order_ListView_Summary" Caption="D5 Custom summaries" IsNewNode="True" />
           <Item Id="D6" ViewId="Order_ListView_Toolbar" Caption="D6 In-grid toolbar" IsNewNode="True" />
           <Item Id="D7" ViewId="Order_ListView_Unbound" Caption="D7 Unbound columns" IsNewNode="True" />
+          <Item Id="D8" ViewId="Product_ListView_Reorder" Caption="D8 Drag to reorder" IsNewNode="True" />
+          <Item Id="D9" ViewId="Order_ListView_Presets" Caption="D9 Layout presets" IsNewNode="True" />
+          <Item Id="D10" ViewId="Order_ListView_Columns" Caption="D10 Wide grid" IsNewNode="True" />
         </Items>
       </Item>
     </Items>

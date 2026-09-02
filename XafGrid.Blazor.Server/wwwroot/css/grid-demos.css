@@ -33,6 +33,10 @@
 .xg-empty { padding: 32px; text-align: center; }
 .xg-empty-title { font-size: 1.2em; font-weight: 600; margin-bottom: 4px; }
 
+/* D9 presets, D10 headers */
+.xg-preset-name { width: 160px; }
+.xg-header { cursor: help; }
+
 /* D1 detail row */
 .xg-detail { display: flex; gap: 16px; padding: 8px 12px; }
 .xg-detail-card { min-width: 220px; padding: 8px 12px; border-left: 3px solid #1c7ed6; background: rgba(128,128,128,.08); }

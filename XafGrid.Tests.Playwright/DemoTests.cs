@@ -101,4 +101,75 @@ public class DemoTests : XafTest {
         await Expect(Grid).ToBeVisibleAsync(); // still on the list view — the click must not open the DetailView
         await ScreenshotAsync("d7-unbound");
     }
+
+    // first alphabetic cell of a product row = Name
+    static ILocator NameCell(ILocator row) => row.Locator("td", new() { HasTextRegex = new("[A-Za-z]") }).First;
+
+    [Test]
+    public async Task D8_drag_row_reorders_and_persists() {
+        await OpenViewAsync("Product_ListView_Reorder");
+        var first = await NameCell(DataRows.Nth(0)).InnerTextAsync();
+        var third = await NameCell(DataRows.Nth(2)).InnerTextAsync();
+        Assert.That(third, Is.Not.EqualTo(first));
+
+        // drag row 3 by its handle onto the top edge of row 1 — DevExpress needs intermediate pointer moves
+        var handle = DataRows.Nth(2).Locator("[class*='drag']").First;
+        var target = await DataRows.Nth(0).BoundingBoxAsync();
+        await handle.HoverAsync();
+        await Page.Mouse.DownAsync();
+        await Page.Mouse.MoveAsync(target!.X + 40, target.Y + target.Height / 2, new() { Steps = 10 });
+        await Page.Mouse.MoveAsync(target.X + 40, target.Y + 3, new() { Steps = 10 });
+        await Page.Mouse.UpAsync();
+
+        await Expect(NameCell(DataRows.Nth(0))).ToHaveTextAsync(third);
+        await ScreenshotAsync("d8-reorder");
+
+        await OpenViewAsync("Product_ListView_Reorder"); // persisted?
+        await Expect(NameCell(DataRows.Nth(0))).ToHaveTextAsync(third);
+    }
+
+    [Test]
+    public async Task D9_layout_preset_round_trips_through_the_database() {
+        await OpenViewAsync("Order_ListView_Presets");
+        var toolbar = Page.Locator(".xg-presets");
+        await Expect(toolbar).ToBeVisibleAsync();
+        var firstNumber = DataRows.First.Locator("td").Nth(1);
+        await Expect(firstNumber).ToHaveTextAsync("ORD-00001");
+
+        await Page.Locator(".dxbl-grid-header", new() { HasText = "Total" }).ClickAsync(); // sort by Total
+        await Expect(firstNumber).Not.ToHaveTextAsync("ORD-00001");
+        var sortedFirst = await firstNumber.InnerTextAsync();
+
+        await toolbar.Locator(".xg-preset-name input:visible").FillAsync("ByTotal"); // DxToolbar keeps a hidden measurement clone
+        await toolbar.GetByRole(AriaRole.Button, new() { Name = "Save layout" }).ClickAsync();
+        await Expect(toolbar.GetByRole(AriaRole.Button, new() { Name = "ByTotal" })).ToBeVisibleAsync();
+
+        await toolbar.GetByRole(AriaRole.Button, new() { Name = "Reset sort" }).ClickAsync(); // ClearSort drops every sort → natural DB order
+        await Expect(firstNumber).Not.ToHaveTextAsync(sortedFirst);
+
+        await toolbar.GetByRole(AriaRole.Button, new() { Name = "ByTotal" }).ClickAsync();
+        await Expect(firstNumber).ToHaveTextAsync(sortedFirst);
+        await ScreenshotAsync("d9-presets");
+    }
+
+    [Test]
+    public async Task D10_fixed_columns_stay_put_while_the_grid_scrolls() {
+        await OpenViewAsync("Order_ListView_Columns");
+        var number = Page.Locator(".dxbl-grid-header", new() { HasText = "Number" });
+        var orderDate = Page.Locator(".dxbl-grid-header", new() { HasText = "Order Date" });
+        var before = await number.BoundingBoxAsync();
+        var dateBefore = await orderDate.BoundingBoxAsync();
+
+        var scrolled = await Page.EvaluateAsync<bool>(@"() => {
+            const el = [...document.querySelectorAll('.dxbl-grid *')].find(e => e.scrollWidth > e.clientWidth + 20);
+            if (!el) return false; el.scrollLeft = 500; el.dispatchEvent(new Event('scroll')); return true; }");
+        Assert.That(scrolled, Is.True, "grid should be wider than its viewport");
+        await Page.WaitForTimeoutAsync(500); // let the virtualized columns re-render
+
+        var after = await number.BoundingBoxAsync();
+        Assert.That(after!.X, Is.EqualTo(before!.X).Within(1), "fixed column moved");
+        var dateAfter = await orderDate.BoundingBoxAsync();
+        Assert.That(dateAfter is null || dateAfter.X < dateBefore!.X - 100, "scrollable column did not move");
+        await ScreenshotAsync("d10-wide");
+    }
 }

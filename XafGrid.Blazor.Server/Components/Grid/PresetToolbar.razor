@@ -1,0 +1,44 @@
+@using DevExpress.Blazor
+
+<DxToolbar CssClass="xg-toolbar xg-presets" ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
+    <Items>
+        <DxToolbarItem>
+            <Template>
+                <DxTextBox @bind-Text="NewName" BindValueMode="BindValueMode.OnInput" NullText="Preset name" CssClass="xg-preset-name" />
+            </Template>
+        </DxToolbarItem>
+        <DxToolbarItem Text="Save layout" Click="OnSave" Enabled="@(!string.IsNullOrWhiteSpace(NewName))" />
+        @foreach (var name in Names) {
+            var n = name;
+            <DxToolbarItem Text="@n" Click="() => Load.InvokeAsync(n)" BeginGroup="@(n == Names[0])" Tooltip="@($"Load layout {n}")" />
+            <DxToolbarItem Text="✕" Click="() => OnDelete(n)" Tooltip="@($"Delete layout {n}")" />
+        }
+        <DxToolbarItem Text="Reset sort" Click="() => Grid.ClearSort()" BeginGroup="true" Alignment="ToolbarItemAlignment.Right" />
+    </Items>
+</DxToolbar>
+
+@code {
+    [Parameter, EditorRequired] public IGrid Grid { get; set; }
+    [Parameter] public IReadOnlyList<string> Presets { get; set; } = Array.Empty<string>();
+    [Parameter] public EventCallback<string> Save { get; set; }
+    [Parameter] public EventCallback<string> Load { get; set; }
+    [Parameter] public EventCallback<string> Delete { get; set; }
+
+    // ponytail: the component owns the visible list; the controller only persists
+    List<string> Names = new();
+    string NewName;
+
+    protected override void OnInitialized() => Names = Presets.ToList();
+
+    async Task OnSave() {
+        var name = NewName.Trim();
+        await Save.InvokeAsync(name);
+        if (!Names.Contains(name)) Names = Names.Append(name).OrderBy(x => x).ToList();
+        NewName = null;
+    }
+
+    async Task OnDelete(string name) {
+        await Delete.InvokeAsync(name);
+        Names = Names.Where(x => x != name).ToList();
+    }
+}

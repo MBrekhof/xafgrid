@@ -19,6 +19,7 @@ public class XafGridEFCoreDbContext : DbContext {
     public DbSet<Product> Products { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderLine> OrderLines { get; set; }
+    public DbSet<GridLayoutPreset> GridLayoutPresets { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
