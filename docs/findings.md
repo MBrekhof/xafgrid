@@ -72,3 +72,46 @@ Verdict: **works.** `GridModel.CustomizeElement += e => …` (use `+=`: XAF chai
 detail cells). Row class by order age, inline `Style` for cancelled rows, cell class on `Total`.
 `e.Column.Name` is unset — match on `(e.Column as IGridDataColumn).FieldName`. Row backgrounds need
 `.dxbl-grid tr.cls > td { background-color }` to beat the theme's cell styles.
+
+## D4 — custom grouping (`screens/d4-groups.png`)
+
+Verdict: **works.** On the column wrapper's `DxGridDataColumnModel`: `GroupIndex = 0`,
+`GroupInterval = Custom`, `SortMode = Custom`; then `GridModel.CustomGroup` (`SameGroup` by bucket),
+`CustomSort` (bucket order) and `CustomizeGroupValueDisplayText` (bucket label). Group summaries are
+added through XAF's wrapper collection — `editor.GridSummary.GroupSummary.Add(new
+DxGridSummaryItemWrapper(new DxGridSummaryItemModel { FieldName, SummaryType, ValueDisplayFormat }))`
+— not through the `RenderFragment` on `DxGridModel.GroupSummary`. `DataColumnGroupRowTemplate` gets
+`GridDataColumnGroupRowTemplateContext`; `context.Grid.GetGroupSummaryItems()` +
+`GetGroupSummaryValue/FormattedValue(item, context.VisibleIndex)` give the numbers for the bar.
+Virtual scrolling renders only the visible groups (test asserts the first bucket, not all of them).
+
+## D5 — custom summaries (`screens/d5-summary.png`)
+
+Verdict: **works.** Total summaries in code via `editor.GridSummary.TotalSummary.Add(...)` (Count,
+Sum, Avg and a `GridSummaryItemType.Custom` item with a `Name`). `CustomSummary` runs
+Start/Calculate/Finalize per item — `e.Grid.IsDataItemSelected(e.DataItem)` gives "sum of selected";
+`CustomizeSummaryDisplayText` labels it. Selection changes don't recalc by themselves: handle
+`View.SelectionChanged` and call `editor.GridInstance?.RefreshSummary()`. `ColumnFooterTemplate`
+stacks the items (`context.SummaryItems`, `context.Grid.GetTotalSummaryDisplayText(item)`);
+`FooterDisplayMode = Always`.
+
+## D6 — in-grid toolbar (`screens/d6-toolbar.png`)
+
+Verdict: **works.** `ToolbarTemplate` gets `GridToolbarTemplateContext.Grid` (the live `IGrid`), so a
+`DxToolbar` can call `GroupBy`, `ExpandAllGroupRows`, `AutoFitColumnWidths`, `ShowFilterBuilder`,
+`ClearFilter`, `ExportToXlsxAsync("orders", new GridXlExportOptions())` — the XLSX/CSV download works
+inside XAF (built-in Export action only does PDF). `EmptyDataAreaTemplate` gets the grid too.
+Playwright: DxToolbar renders a hidden `dxbl-virtual-el` clone of each item — locate items by role
+(`GetByRole(Button, Name)`), not by text.
+
+## D7 — unbound columns (`screens/d7-unbound.png`)
+
+Verdict: **works.** `editor.AddColumnModel(new DxGridDataColumnModel { FieldName, Caption,
+UnboundType, Width })` for code-computed columns (`GridModel.UnboundColumnData`, resolve the entity
+with `editor.GetObject(e.DataItem)`), `UnboundExpression = "[Total] * 0.2"` for criteria-computed
+ones, and a `CellDisplayTemplate` with a `DxButton` for an action column. The button must sit in an
+element with `AddEventStopPropagationAttribute("onclick")`, otherwise XAF's row click opens the
+DetailView. Editing through the view's `ObjectSpace` + `CommitChanges()` refreshes the row in place.
+Added columns are appended **sorted by FieldName** (Actions, DaysOpen, LineCount, Margin), not in
+call order — set `Caption`s accordingly or expect to reorder. Column-chooser survival (spike S2)
+not checked.

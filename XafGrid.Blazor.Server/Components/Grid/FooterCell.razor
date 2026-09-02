@@ -1,0 +1,9 @@
+@using DevExpress.Blazor
+
+@foreach (var item in Context.SummaryItems) {
+    <div class="xg-footer-item">@Context.Grid.GetTotalSummaryDisplayText(item)</div>
+}
+
+@code {
+    [Parameter, EditorRequired] public GridColumnFooterTemplateContext Context { get; set; }
+}

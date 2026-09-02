@@ -14,6 +14,10 @@
           <Item Id="D1" ViewId="Order_ListView_MasterDetail" Caption="D1 Master-detail row" IsNewNode="True" />
           <Item Id="D2" ViewId="Order_ListView_Cells" Caption="D2 Rich cells" IsNewNode="True" />
           <Item Id="D3" ViewId="Order_ListView_Heatmap" Caption="D3 Heat-map" IsNewNode="True" />
+          <Item Id="D4" ViewId="Order_ListView_Groups" Caption="D4 Custom grouping" IsNewNode="True" />
+          <Item Id="D5" ViewId="Order_ListView_Summary" Caption="D5 Custom summaries" IsNewNode="True" />
+          <Item Id="D6" ViewId="Order_ListView_Toolbar" Caption="D6 In-grid toolbar" IsNewNode="True" />
+          <Item Id="D7" ViewId="Order_ListView_Unbound" Caption="D7 Unbound columns" IsNewNode="True" />
         </Items>
       </Item>
     </Items>

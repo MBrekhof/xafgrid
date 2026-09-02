@@ -15,6 +15,10 @@ public class DemoViewsGeneratorUpdater : ModelNodesGeneratorUpdater<ModelViewsNo
         ("Order_ListView_MasterDetail", typeof(Order), "D1 Master-detail row"),
         ("Order_ListView_Cells", typeof(Order), "D2 Rich cells"),
         ("Order_ListView_Heatmap", typeof(Order), "D3 Heat-map"),
+        ("Order_ListView_Groups", typeof(Order), "D4 Custom grouping"),
+        ("Order_ListView_Summary", typeof(Order), "D5 Custom summaries"),
+        ("Order_ListView_Toolbar", typeof(Order), "D6 In-grid toolbar"),
+        ("Order_ListView_Unbound", typeof(Order), "D7 Unbound columns"),
     };
 
     public override void UpdateNode(ModelNode viewsNode) {

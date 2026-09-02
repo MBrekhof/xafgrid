@@ -1,0 +1,22 @@
+@using DevExpress.Blazor
+
+@{
+    var items = Context.Grid.GetGroupSummaryItems();
+    var count = items.FirstOrDefault(i => i.SummaryType == GridSummaryItemType.Count);
+    var sum = items.FirstOrDefault(i => i.SummaryType == GridSummaryItemType.Sum);
+    // ponytail: fixed scale for the bar; the real max would need a pass over all groups
+    var sumValue = sum is null ? 0m : Convert.ToDecimal(Context.Grid.GetGroupSummaryValue(sum, Context.VisibleIndex) ?? 0m);
+    var pct = Math.Clamp((double)(sumValue / 3_000_000m) * 100, 1, 100);
+}
+<span class="xg-group-label">@Context.GroupValueDisplayText</span>
+@if (count is not null) {
+    <span class="xg-group-count">@Context.Grid.GetGroupSummaryFormattedValue(count, Context.VisibleIndex) orders</span>
+}
+@if (sum is not null) {
+    <span class="xg-group-sum">@Context.Grid.GetGroupSummaryFormattedValue(sum, Context.VisibleIndex)</span>
+    <span class="xg-group-bar"><span style="width:@pct.ToString("0", System.Globalization.CultureInfo.InvariantCulture)%"></span></span>
+}
+
+@code {
+    [Parameter, EditorRequired] public GridDataColumnGroupRowTemplateContext Context { get; set; }
+}

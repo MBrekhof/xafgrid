@@ -1,0 +1,11 @@
+@using DevExpress.Blazor
+
+<div class="xg-empty">
+    <div class="xg-empty-title">No orders match</div>
+    <div>Loosen the filter or start over.</div>
+    <DxButton Text="Clear filter" RenderStyle="ButtonRenderStyle.Secondary" Click="() => Grid.ClearFilter()" />
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IGrid Grid { get; set; }
+}

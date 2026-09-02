@@ -1,0 +1,23 @@
+@using DevExpress.Blazor
+@using XafGrid.Module.BusinessObjects
+
+<DxToolbar CssClass="xg-toolbar" ItemRenderStyleMode="ToolbarRenderStyleMode.Plain">
+    <Items>
+        <DxToolbarItem Text="Group by status" Click="() => Grid.GroupBy(nameof(Order.Status))" />
+        <DxToolbarItem Text="Expand" Click="() => Grid.ExpandAllGroupRows()" />
+        <DxToolbarItem Text="Collapse" Click="() => Grid.CollapseAllGroupRows()" />
+        <DxToolbarItem Text="Ungroup" Click="() => Grid.ClearSort()" />
+        <DxToolbarItem Text="Auto-fit columns" Click="() => Grid.AutoFitColumnWidths()" BeginGroup="true" />
+        <DxToolbarItem Text="Filter builder" Click="() => Grid.ShowFilterBuilder()" BeginGroup="true" />
+        <DxToolbarItem Text="Clear filter" Click="() => Grid.ClearFilter()" />
+        <DxToolbarItem Text="XLSX" Click="ExportXlsx" BeginGroup="true" Alignment="ToolbarItemAlignment.Right" />
+        <DxToolbarItem Text="CSV" Click="ExportCsv" Alignment="ToolbarItemAlignment.Right" />
+    </Items>
+</DxToolbar>
+
+@code {
+    [Parameter, EditorRequired] public IGrid Grid { get; set; }
+
+    Task ExportXlsx() => Grid.ExportToXlsxAsync("orders", new GridXlExportOptions());
+    Task ExportCsv() => Grid.ExportToCsvAsync("orders", new GridCsvExportOptions());
+}
