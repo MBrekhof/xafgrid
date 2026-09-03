@@ -26,10 +26,13 @@ each verified by a Playwright (C#/NUnit) test with a screenshot.
 | D9 | Named layout presets stored in the database | `IGrid.SaveLayout` / `LoadLayout` |
 | D10 | Wide grid: fixed columns, header icons, column virtualization | `FixedPosition`, `VirtualScrollingMode` |
 
+**Using one of these in your own app:** [`HOW-TO-IMPLEMENT.md`](HOW-TO-IMPLEMENT.md).
+Per-demo verdicts (what worked, what XAF blocks, dxdocs references): [`docs/findings.md`](docs/findings.md).
 Design and phase plan: [`docs/superpowers/specs/2026-09-02-xafgrid-design.md`](docs/superpowers/specs/2026-09-02-xafgrid-design.md).
-Per-demo verdicts (what worked, what XAF blocks): `docs/findings.md`.
 
 ## Run
+
+Building needs the DevExpress NuGet feed (a DevExpress subscription); everything else is plain .NET 8.
 
 ```
 dotnet run --project XafGrid.Blazor.Server
@@ -46,3 +49,7 @@ dotnet test XafGrid.Tests.Playwright
 
 The fixture deletes the database, starts the built app on a fixed port and screenshots every
 demo into `XafGrid.Tests.Playwright/TestResults/screens/`.
+
+## License
+
+[MIT](LICENSE). The DevExpress components it uses are commercial and licensed separately.
