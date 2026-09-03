@@ -8,7 +8,7 @@ Last session: 2026-09-03. Task state lives on ContextBoard project `xafgrid` (bo
   verdicts in `docs/findings.md`. Cards CARD-1472…1482 closed with their commit SHAs.
 - Not done: D11 (filter-row/menu templates) and D12 (custom edit form) — deliberately postponed,
   same `DxGridModel` template properties; do them only if wanted.
-- Repo: https://github.com/MBrekhof/xafgrid (private), branch `master`, account `MBrekhof`.
+- Repo: https://github.com/MBrekhof/xafgrid (public, MIT), branch `master`, account `MBrekhof`. HOW-TO-IMPLEMENT.md is the outside-reader guide — keep it in step when a demo pattern changes.
 
 ## Run / test
 
