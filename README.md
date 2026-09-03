@@ -1,5 +1,10 @@
 # xafgrid
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/screens/hero-dark.png">
+  <img alt="XAF ListView with badge, star and bar cells, one row expanded into a nested order-lines grid" src="docs/screens/hero.png">
+</picture>
+
 What can the DevExpress Blazor `DxGrid` do inside an XAF ListView **beyond what the Model Editor
 offers** — when you drive it from code via `DxGridListEditor`?
 
@@ -9,6 +14,7 @@ each verified by a Playwright (C#/NUnit) test with a screenshot.
 
 | # | Demo | DxGrid members |
 |---|---|---|
+| — | Showcase: D1 + D2 on one grid (the image above) | both controllers target it via `TargetViewId` |
 | D1 | Master-detail row (nested lines grid) | `DetailRowTemplate` |
 | D2 | Rich cells: badges, stars, inline bars, avatars | `DataColumnCellDisplayTemplate` |
 | D3 | Row heat-map / cell highlight beyond Conditional Appearance | `CustomizeElement` |

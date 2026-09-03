@@ -12,7 +12,7 @@ namespace XafGrid.Blazor.Server.Controllers.Demos;
 /// </summary>
 public class RichCellsController : ObjectViewController<ListView, Order> {
     public RichCellsController() {
-        TargetViewId = "Order_ListView_Cells";
+        TargetViewId = "Order_ListView_Cells;Order_ListView_Showcase";
     }
 
     protected override void OnViewControlsCreated() {

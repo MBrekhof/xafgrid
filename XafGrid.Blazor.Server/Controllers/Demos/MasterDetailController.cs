@@ -8,7 +8,7 @@ namespace XafGrid.Blazor.Server.Controllers.Demos;
 /// <summary>D1 — expand an order row into a nested lines grid + customer card (DxGridModel.DetailRowTemplate).</summary>
 public class MasterDetailController : ObjectViewController<ListView, Order> {
     public MasterDetailController() {
-        TargetViewId = "Order_ListView_MasterDetail";
+        TargetViewId = "Order_ListView_MasterDetail;Order_ListView_Showcase";
     }
 
     protected override void OnViewControlsCreated() {

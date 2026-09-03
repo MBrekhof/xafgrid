@@ -4,6 +4,18 @@ namespace XafGrid.Tests.Playwright;
 
 public class DemoTests : XafTest {
     [Test]
+    public async Task Showcase_combines_rich_cells_and_nested_grid_for_the_readme_hero() {
+        foreach(var (dark, name) in new[] { (false, "hero"), (true, "hero-dark") }) {
+            if(dark) await UseDarkThemeAsync();
+            await OpenViewAsync("Order_ListView_Showcase");
+            await Expect(Page.Locator(".xg-badge").First).ToBeVisibleAsync();
+            await DataRows.Nth(1).Locator("[class*='expand-button']").First.ClickAsync();
+            await Expect(Page.Locator(".xg-detail .dxbl-grid tbody tr[data-visible-index]").First).ToBeVisibleAsync();
+            await ScreenshotAsync(name, Grid);
+        }
+    }
+
+    [Test]
     public async Task D1_master_detail_row_expands_to_nested_lines_grid() {
         await OpenViewAsync("Order_ListView_MasterDetail");
         await DataRows.First.Locator("[class*='expand-button']").First.ClickAsync();

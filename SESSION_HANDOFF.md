@@ -1,10 +1,10 @@
 # Session handoff — xafgrid
 
-Last session: 2026-09-02. Task state lives on ContextBoard project `xafgrid` (board-only, no TODO.md).
+Last session: 2026-09-03. Task state lives on ContextBoard project `xafgrid` (board-only, no TODO.md).
 
 ## State
 
-- P0–P3 done: harness + D1–D10 demos, 11/11 Playwright tests green, evidence in `docs/screens/`,
+- P0–P3 done: harness + D1–D10 demos + Showcase (D1+D2 on one grid, README hero, CARD-1490), 12/12 Playwright tests green, evidence in `docs/screens/`,
   verdicts in `docs/findings.md`. Cards CARD-1472…1482 closed with their commit SHAs.
 - Not done: D11 (filter-row/menu templates) and D12 (custom edit form) — deliberately postponed,
   same `DxGridModel` template properties; do them only if wanted.

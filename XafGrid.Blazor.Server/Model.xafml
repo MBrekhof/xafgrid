@@ -11,6 +11,7 @@
     <Items>
       <Item Id="GridDemos" Caption="Grid Demos" Index="0" IsNewNode="True">
         <Items>
+          <Item Id="D0" ViewId="Order_ListView_Showcase" Caption="Showcase" IsNewNode="True" />
           <Item Id="D1" ViewId="Order_ListView_MasterDetail" Caption="D1 Master-detail row" IsNewNode="True" />
           <Item Id="D2" ViewId="Order_ListView_Cells" Caption="D2 Rich cells" IsNewNode="True" />
           <Item Id="D3" ViewId="Order_ListView_Heatmap" Caption="D3 Heat-map" IsNewNode="True" />

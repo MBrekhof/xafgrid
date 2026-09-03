@@ -12,6 +12,7 @@ namespace XafGrid.Blazor.Server;
 /// </summary>
 public class DemoViewsGeneratorUpdater : ModelNodesGeneratorUpdater<ModelViewsNodesGenerator> {
     static readonly (string Id, Type Type, string Caption)[] Views = {
+        ("Order_ListView_Showcase", typeof(Order), "Showcase"), // D1 + D2 on one grid — README hero image
         ("Order_ListView_MasterDetail", typeof(Order), "D1 Master-detail row"),
         ("Order_ListView_Cells", typeof(Order), "D2 Rich cells"),
         ("Order_ListView_Heatmap", typeof(Order), "D3 Heat-map"),

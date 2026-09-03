@@ -31,11 +31,14 @@ public abstract class XafTest : PageTest {
     });
 
     /// <summary>Evidence screenshots are committed under docs/screens.</summary>
-    protected async Task ScreenshotAsync(string name) {
+    protected async Task ScreenshotAsync(string name, ILocator? element = null) {
         var dir = Path.Combine(AppHost.RepoRoot, "docs", "screens");
         Directory.CreateDirectory(dir);
         var path = Path.Combine(dir, name + ".png");
-        await Page.ScreenshotAsync(new() { Path = path, Animations = ScreenshotAnimations.Disabled });
+        if(element is null)
+            await Page.ScreenshotAsync(new() { Path = path, Animations = ScreenshotAnimations.Disabled });
+        else
+            await element.ScreenshotAsync(new() { Path = path, Animations = ScreenshotAnimations.Disabled });
         TestContext.AddTestAttachment(path);
     }
 
